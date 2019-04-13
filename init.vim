@@ -7,6 +7,8 @@ Plug 'junegunn/fzf.vim'
 " git help
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+
+" Session management
 Plug 'tpope/vim-obsession'
 
 " Prettifying stuff
@@ -14,8 +16,8 @@ Plug 'tpope/vim-obsession'
 Plug 'drewtempelmeyer/palenight.vim'  " Somewhat darker scheme
 Plug 'rakr/vim-one'
 Plug 'aonemd/kuroi.vim'
-Plug 'rakr/vim-colors-rakr'
 Plug 'jonathanfilip/vim-lucius'
+Plug 'fneu/breezy'
 
 "" Other prettifiers
 Plug 'Yggdroot/indentLine'  " Indent guides
@@ -130,8 +132,9 @@ let g:ncm2#matcher = 'substrfuzzy'
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-colo lucius
-set background=light
+set termguicolors
+colo kuroi
+set background=dark
 set colorcolumn=88,120
 highlight ColorColumn ctermbg=7
 set ignorecase
