@@ -12,12 +12,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
 
 " Prettifying stuff
-"" Color schemes
-Plug 'drewtempelmeyer/palenight.vim'  " Somewhat darker scheme
 Plug 'rakr/vim-one'
-Plug 'aonemd/kuroi.vim'
-Plug 'jonathanfilip/vim-lucius'
-Plug 'fneu/breezy'
 
 "" Other prettifiers
 Plug 'Yggdroot/indentLine'  " Indent guides
@@ -32,14 +27,17 @@ Plug 'majutsushi/tagbar'  " show tags in a bar (functions etc) for easy browsing
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-" NCM completion
-Plug 'ncm2/ncm2'  " Completion manager
-Plug 'ncm2/ncm2-jedi', {'for': 'python'}  " Python plugin for ncm2 completion
-Plug 'ncm2/ncm2-bufword'  " Python plugin for ncm2 completion
-Plug 'ncm2/ncm2-path'  " Python plugin for ncm2 completion
+" Misc syntax highlighters and such
+Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
+Plug 'cespare/vim-toml', {'for': 'toml'}
+Plug 'ekalinin/Dockerfile.vim', {'for': 'Dockerfile'}
+Plug 'posva/vim-vue', {'for': 'javascript'}
 
-" Vue JS
-Plug 'posva/vim-vue'
+" NCM completion
+Plug 'ncm2/ncm2', {'for': 'python'} " Completion manager
+Plug 'ncm2/ncm2-jedi', {'for': 'python'}  " Python plugin for ncm2 completion
+Plug 'ncm2/ncm2-bufword', {'for': 'python'}  " Python plugin for ncm2 completion
+Plug 'ncm2/ncm2-path', {'for': 'python'}  " Python plugin for ncm2 completion
 
 " Python help
 Plug 'davidhalter/jedi-vim', {'for': 'python'}   " jedi for python
@@ -47,7 +45,6 @@ Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}  "better indenting for p
 Plug 'tweekmonster/impsort.vim', {'for': 'python'}
 Plug 'alfredodeza/coveragepy.vim', {'for': 'python'}
 Plug 'ambv/black', {'for': 'python'}
-" Plug 'python-rope/ropevim', {'for': 'python'}
 call plug#end()
 
 let mapleader=';'
@@ -89,21 +86,21 @@ set nowrap
 set noswapfile
 set nobackup
 
-" And some web stuff
-au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2 |
-    \ set softtabstop=2 |
-    \ set shiftwidth=2 |
-    \ set expandtab
-
-autocmd FileType yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-
 " Python
 " Tabs, indents and other PEP8 stuff
-au BufNewFile,BufRead *.py
+autocmd BufNewFile,BufRead *.py
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
+    \ set textwidth=88 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix
+
+autocmd BufNewFile,BufRead *.js,*.html,*.css,*.yaml,*.yml
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
     \ set textwidth=88 |
     \ set expandtab |
     \ set autoindent |
@@ -133,8 +130,8 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 set termguicolors
-colo kuroi
-set background=dark
+colo one
+set background=light
 set colorcolumn=88,120
 highlight ColorColumn ctermbg=7
 set ignorecase
