@@ -13,6 +13,7 @@ Plug 'tpope/vim-obsession'
 
 " Prettifying stuff
 Plug 'rakr/vim-one'
+Plug 'sonph/onehalf', {'rtp': 'vim/'} " Dark and light schemes
 
 "" Other prettifiers
 Plug 'Yggdroot/indentLine'  " Indent guides
@@ -54,6 +55,8 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " file browsing and searching
 nnoremap <Leader>ff :FZF<CR>
 nnoremap <Leader>; :FZF<CR>
+nnoremap <C-p> :FZF<CR>
+
 nnoremap <Leader>fg :GitFiles<CR>
 nnoremap <Leader>ft :Tags<CR>
 nnoremap <C-e> :Buffers<CR>
@@ -70,7 +73,7 @@ let g:netrw_browse_split=0
 let g:netrw_altv=1
 let g:netrw_winsize= 25
 
-let g:python3_host_prog="/usr/bin/python3.7"
+let g:python3_host_prog="/usr/bin/python3.6"
 
 " Open split below and right
 set splitbelow
@@ -86,13 +89,13 @@ set nowrap
 set noswapfile
 set nobackup
 
-" Python
+
 " Tabs, indents and other PEP8 stuff
 autocmd BufNewFile,BufRead *.py
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
-    \ set textwidth=88 |
+    \ set textwidth=120 |
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix
@@ -120,25 +123,24 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=menuone,noselect,noinsert
 set shortmess+=c
 inoremap <c-c> <ESC>
-" make it fast
 let ncm2#popup_delay = 5
-" let ncm2#complete_length = [[1, 1]]
-" Use new fuzzy based matches
+" Use fuzzy matches
 let g:ncm2#matcher = 'substrfuzzy'
 " Use <TAB> to select the popup menu:
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-set termguicolors
-colo one
-set background=light
-set colorcolumn=88,120
-highlight ColorColumn ctermbg=7
-set ignorecase
-set smartcase
-set number
-set tags=.tags
+colo onehalflight
 
+set background=light
+set colorcolumn=89,121
+highlight ColorColumn ctermbg=7
+set cursorline
+set ignorecase
+set number
+set smartcase
+set tags=.tags
+set termguicolors
 
 let g:airline_powerline_fonts=1
 " Enable the list of buffers
@@ -146,7 +148,7 @@ let g:airline#extensions#tabline#enabled = 1
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#branch#format = 1
-let g:airline_theme='minimalist'
+let g:airline_theme='onehalfdark'
 
 let g:indentLine_char = '▏'
 let g:indentLine_first_char = '▏'
