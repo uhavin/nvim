@@ -12,7 +12,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
 
 " Prettifying stuff
-Plug 'rakr/vim-one'
 Plug 'sonph/onehalf', {'rtp': 'vim/'} " Dark and light schemes
 
 "" Other prettifiers
@@ -91,7 +90,7 @@ set nobackup
 
 
 " Tabs, indents and other PEP8 stuff
-autocmd BufNewFile,BufRead *.py
+autocmd BufNewFile,BufRead *.py,*.sh
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
@@ -131,13 +130,13 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 colo onehalflight
-
-set background=light
+set bg=light
 set colorcolumn=89,121
 highlight ColorColumn ctermbg=7
 set cursorline
 set ignorecase
 set number
+set relativenumber
 set smartcase
 set tags=.tags
 set termguicolors
@@ -145,10 +144,10 @@ set termguicolors
 let g:airline_powerline_fonts=1
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
-" Show just the filename
+" Show just the filename in the tabline
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#branch#format = 1
-let g:airline_theme='onehalfdark'
+let g:airline_theme='minimalist'
 
 let g:indentLine_char = '▏'
 let g:indentLine_first_char = '▏'
