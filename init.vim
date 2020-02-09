@@ -203,7 +203,8 @@ set termguicolors
 
 let ayucolor="mirage"
 colo ayu
-
+" don't hide the quotes in e.g. json files.
+set conceallevel=0
 
 let g:airline_powerline_fonts=1
 
