@@ -94,7 +94,7 @@ let g:netrw_browse_split=0
 let g:netrw_altv=1
 let g:netrw_winsize= 25
 
-let g:python3_host_prog="/usr/bin/python3.6"
+let g:python3_host_prog="/usr/bin/python3"
 
 " NerdTree
 " - open NERDTree when typing vim (w/o any file given)
