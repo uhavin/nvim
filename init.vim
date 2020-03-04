@@ -201,8 +201,8 @@ set smartcase
 set tags=.tags
 set termguicolors
 
-let ayucolor="mirage"
-colo ayu
+" let ayucolor="light"
+colo onehalflight
 " don't hide the quotes in e.g. json files.
 set conceallevel=0
 
