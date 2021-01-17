@@ -23,6 +23,7 @@ Plug 'tpope/vim-repeat'
 
 Plug 'jiangmiao/auto-pairs'
 Plug 'andymass/vim-matchup'
+Plug 'vim-scripts/python_match.vim'
 
 " Programming
 "" IntelliSense
@@ -85,9 +86,11 @@ let g:lightline = {
 \ }
 
 function! PrefixedBranch()
-    let prefix = ''
     let branch_name = FugitiveHead()
-    return prefix . ' ' . branch_name
+    if !empty(branch_name)
+        return '' . ' ' . branch_name
+    endif
+    return ""
 endfunction
 
 let g:pyenv = system('pyenv local')
