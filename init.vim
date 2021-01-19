@@ -230,7 +230,7 @@ set nobackup
 
 " Keep undo history
 set undofile
-set undodir=/home/niels/.local/share/nvim/undo
+set undodir=~/.local/share/nvim/undo
 
 " don't wrap lines please
 set nowrap
