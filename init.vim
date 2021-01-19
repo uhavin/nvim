@@ -1,5 +1,4 @@
 call plug#begin(stdpath('data') . '/plugged')
-
 """" Looks
 Plug 'Yggdroot/indentLine'  " Indent guides
 Plug 'rakr/vim-one'  " Dark and light themes
@@ -16,6 +15,10 @@ Plug 'junegunn/vim-peekaboo' " Preview registers
 Plug 'wincent/ferret'  "Use :Ack for search
 Plug 'simeji/winresizer'  " use <Leader>w to resize/move/focus windows
 Plug 'simnalamburt/vim-mundo'  " the undo tree
+
+Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'ryanoasis/vim-devicons'
 
 Plug 'tpope/vim-commentary'  "comment-out by gc
 Plug 'tpope/vim-surround'
@@ -39,6 +42,7 @@ Plug 'liuchengxu/vista.vim'
 " Python
 Plug 'fisadev/vim-isort'
 Plug 'psf/black', { 'branch': 'stable', 'for': 'python'}
+Plug 'alfredodeza/coveragepy.vim', {'for': 'python'}
 "" Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -96,7 +100,7 @@ endfunction
 let g:pyenv = system('pyenv local')
 function! Pyenv()
     if !empty($PYENV_VIRTUAL_ENV)
-        return '🐍 ' .  g:pyenv_name
+        return ' ' .  g:pyenv_name
     endif
     return ""
 endfunction
@@ -164,6 +168,8 @@ nmap <silent> gr <Plug>(coc-references)
 
 nmap <leader>t :Vista!!<cr>
 
+nnoremap <Leader>> :GitGutterNextHunk<CR>
+nnoremap <Leader>< :GitGutterPrevHunk<CR>
 
 " Open split below and right
 set splitbelow
@@ -200,6 +206,23 @@ nnoremap <Leader><Space> :Find<Space>
 nnoremap <Leader>fg :GitFiles<CR>
 nnoremap <Leader>ft :Tags<CR>
 nnoremap <Leader>e :Buffers<CR>
+" NerdTree
+" - close tab when only NERDTree is open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+" - Close NERDTree when opening that file
+" let NERDTreeQuitOnOpen = 1
+" - Close buffer when deleting a file
+let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let NERDTreeMapOpenSplit = "x"
+let NERDTreeMapPreviewSplit = "gx"
+" let NERDTreeMapCloseDir = "<"
+" let NERDTREEMapCloseChildren = "<<"
+let NERDTreeMapOpenVSplit = "v"
+let NERDTreeMapPreviewVSplit = "gv"
+nnoremap <Leader>n :NERDTreeToggle<Enter>
+nnoremap <silent> <Leader>. :NERDTreeFind<CR>
 
 " Personally, I find swap files annoying.
 set noswapfile
@@ -249,6 +272,7 @@ autocmd BufNewFile,BufRead *.js,*.html,*.css,*.yaml,*.yml
     \ set fileformat=unix
 
 set tags=.tags
+let g:gutentags_ctags_tagfile='.tags'
 let g:vista_sidebar_width=42
 
 let g:vimspector_enable_mappings = 'HUMAN'
