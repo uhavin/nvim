@@ -2,6 +2,8 @@
   "yaml.schemas": {
     "https://raw.githubusercontent.com/docker/compose/master/compose/config/config_schema_v2.0.json": "**/docker-compose*.yml"
   },
+  "graphql.filetypes":  ["graphql", "javascript", "vue"],
+  "graphql.watcherPattern": "**/*.{graphql,gql,js,jsx,vue}",
   "python.formatting.provider": "black",
   "diagnostic-languageserver.filetypes": {
     "python": "pylint"

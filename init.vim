@@ -1,12 +1,14 @@
 call plug#begin(stdpath('data') . '/plugged')
 """" Looks
-Plug 'Yggdroot/indentLine'  " Indent guides
+"""""" Color schemes aaw yeah
 Plug 'rakr/vim-one'  " Dark and light themes
-Plug 'sonph/onehalf', {'rtp': 'vim/'} " Alternative take on one, better for vim diff
-Plug 'ayu-theme/ayu-vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'} " Alternative take on one
+Plug 'ayu-theme/ayu-vim'  " Great dark theme (imho)
+
 Plug 'itchyny/lightline.vim'
 Plug 'cespare/vim-toml', {'for': 'toml'}
 Plug 'frazrepo/vim-rainbow'
+Plug 'Yggdroot/indentLine'  " Indent guides
 
 " Usability
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }  " Fuzzy finder
@@ -16,9 +18,10 @@ Plug 'wincent/ferret'  "Use :Ack for search
 Plug 'simeji/winresizer'  " use <Leader>w to resize/move/focus windows
 Plug 'simnalamburt/vim-mundo'  " the undo tree
 
-Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'preservim/nerdtree' ", { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
+Plug 'bryanmylee/vim-colorscheme-icons'
 
 Plug 'tpope/vim-commentary'  "comment-out by gc
 Plug 'tpope/vim-surround'
@@ -35,7 +38,7 @@ Plug 'vim-test/vim-test'
 Plug 'puremourning/vimspector'
 
 "" Tags
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags', {'for': ['py', 'js']}
 Plug 'preservim/tagbar'
 Plug 'liuchengxu/vista.vim'
 
@@ -49,7 +52,13 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'junegunn/gv.vim'
+
+"GraphQL
+Plug 'jparise/vim-graphql'
+
 call plug#end()
+
+let g:default_plugin_sidebar_size=42
 
 
 " Use pyenv `nvim` as python for neovim
@@ -118,9 +127,10 @@ let g:indentLine_fileTypeExclude = ['json', 'markdown']
 """" Usability
 let mapleader=';'
 let maplocalleader=';'
+
 let g:peekaboo_window = 'vertical botright 42new'
 
-nnoremap <Leader>/ :noh<CR>
+nnoremap <silent> <Leader>/ :noh<CR>
 
 " COC settings by examples from https://github.com/neoclide/coc.nvim
 " Use tab/shift-tab to cycle throuhg popup choices.
@@ -206,23 +216,35 @@ nnoremap <Leader><Space> :Find<Space>
 nnoremap <Leader>fg :GitFiles<CR>
 nnoremap <Leader>ft :Tags<CR>
 nnoremap <Leader>e :Buffers<CR>
-" NerdTree
-" - close tab when only NERDTree is open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-" - Close NERDTree when opening that file
-" let NERDTreeQuitOnOpen = 1
-" - Close buffer when deleting a file
+
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeMapOpenSplit = "x"
 let NERDTreeMapPreviewSplit = "gx"
-" let NERDTreeMapCloseDir = "<"
-" let NERDTREEMapCloseChildren = "<<"
 let NERDTreeMapOpenVSplit = "v"
 let NERDTreeMapPreviewVSplit = "gv"
+
+let g:NERDTreeWinSize=g:default_plugin_sidebar_size
 nnoremap <Leader>n :NERDTreeToggle<Enter>
 nnoremap <silent> <Leader>. :NERDTreeFind<CR>
+
+" Git status in nerdtree
+let g:NERDTreeGitStatusUseNerdFonts = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'*',
+                \ 'Staged'    :'+',
+                \ 'Untracked' :'%',
+                \ 'Renamed'   :'~',
+                \ 'Unmerged'  :'=',
+                \ 'Deleted'   :'-',
+                \ 'Dirty'     :'•',
+                \ 'Ignored'   :'.',
+                \ 'Clean'     :' ',
+                \ 'Unknown'   :'?',
+                \ }
+
+let NERDTreeIgnore=["node_modules", "__pycache__"]
 
 " Personally, I find swap files annoying.
 set noswapfile
@@ -266,14 +288,15 @@ autocmd BufNewFile,BufRead *.js,*.html,*.css,*.yaml,*.yml
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
-    \ set textwidth=88 |
+    \ set textwidth=9999 |  " Prevent wrapping
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix
 
 set tags=.tags
 let g:gutentags_ctags_tagfile='.tags'
-let g:vista_sidebar_width=42
+let g:vista_sidebar_width=g:default_plugin_sidebar_size
+let g:vista_default_executive = 'coc'
 
 let g:vimspector_enable_mappings = 'HUMAN'
 
