@@ -318,3 +318,7 @@ endfunction
 nnoremap <Leader>- :call OpenTerminal()<CR>
 " ESC out of the terminal
 tnoremap <Esc> <C-\><C-n>
+
+
+"""" Git / remote repository browsing by Gbrowse
+let g:fugitive_gitlab_domains = ['https://gitlab.wearemoose.io']
