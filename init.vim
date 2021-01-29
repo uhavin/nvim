@@ -4,6 +4,8 @@ call plug#begin(stdpath('data') . '/plugged')
 Plug 'rakr/vim-one'  " Dark and light themes
 Plug 'sonph/onehalf', {'rtp': 'vim/'} " Alternative take on one
 Plug 'ayu-theme/ayu-vim'  " Great dark theme (imho)
+Plug 'cormacrelf/vim-colors-github'  " another nice light theme
+Plug 'preservim/vim-colors-pencil'
 
 Plug 'itchyny/lightline.vim'
 Plug 'cespare/vim-toml', {'for': 'toml'}
@@ -13,8 +15,8 @@ Plug 'Yggdroot/indentLine'  " Indent guides
 " Usability
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }  " Fuzzy finder
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-peekaboo' " Preview registers
 Plug 'wincent/ferret'  "Use :Ack for search
+Plug 'junegunn/vim-peekaboo' " Preview registers
 Plug 'simeji/winresizer'  " use <Leader>w to resize/move/focus windows
 Plug 'simnalamburt/vim-mundo'  " the undo tree
 
@@ -27,13 +29,15 @@ Plug 'tpope/vim-commentary'  "comment-out by gc
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-Plug 'jiangmiao/auto-pairs'
+Plug 'cohama/lexima.vim'
 Plug 'andymass/vim-matchup'
 Plug 'vim-scripts/python_match.vim'
 
 " Programming
 "" IntelliSense
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" testing, debugging
 Plug 'vim-test/vim-test'
 Plug 'puremourning/vimspector'
 
@@ -46,6 +50,7 @@ Plug 'liuchengxu/vista.vim'
 Plug 'fisadev/vim-isort'
 Plug 'psf/black', { 'branch': 'stable', 'for': 'python'}
 Plug 'alfredodeza/coveragepy.vim', {'for': 'python'}
+
 "" Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -58,8 +63,6 @@ Plug 'jparise/vim-graphql'
 
 call plug#end()
 
-let g:default_plugin_sidebar_size=42
-
 
 " Use pyenv `nvim` as python for neovim
 let g:python3_host_prog='~/.pyenv/versions/nvim/bin/python'
@@ -70,24 +73,30 @@ if !empty($PYENV_VIRTUAL_ENV)
   call coc#config('python', {
   \   'pythonPath': $PYENV_VIRTUAL_ENV . '/bin/python'
   \ })
-endif
+endif 
 
 
 """" Looks
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set termguicolors
+let g:default_plugin_sidebar_size=42
 
-set number
-set relativenumber
+" Lightline
+function! PrefixedBranch()
+    let branch_name = FugitiveHead()
+    if !empty(branch_name)
+        return '' . ' ' . branch_name
+    endif
+    return ""
+endfunction
 
-set cursorline
-set colorcolumn=89,121
-
-let auycolor="dark"
-colo ayu
+function! Pyenv()
+    if !empty($PYENV_VIRTUAL_ENV)
+        return ' ' .  g:pyenv_name
+    endif
+    return ""
+endfunction
 
 let g:lightline = {
-    \ "colorscheme": "ayu_dark",
+    \ "colorscheme": "ayu",
     \ "active": {
     \   "left": [ [ "mode", "paste" ],
     \             [ "readonly", "filename", "modified", "git_branch", "pyenv" ] ]
@@ -98,30 +107,35 @@ let g:lightline = {
     \ },
 \ }
 
-function! PrefixedBranch()
-    let branch_name = FugitiveHead()
-    if !empty(branch_name)
-        return '' . ' ' . branch_name
-    endif
-    return ""
-endfunction
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
 
-let g:pyenv = system('pyenv local')
-function! Pyenv()
-    if !empty($PYENV_VIRTUAL_ENV)
-        return ' ' .  g:pyenv_name
-    endif
-    return ""
-endfunction
-    
+let auycolor="dark"
+colo ayu
+" set background=light
+" colo github
+
+set cursorline
+set colorcolumn=89,121
+ "override the nasty yellow background
+" highlight CursorLine guibg=#eeeeee 
+" highlight CursorLineNr guibg=#cccccc guifg=#006699
+
+" give the colorcolumn a color
+" highlight ColorColumn guibg=#eeeeee
+
+set number
 
 let g:indentLine_char = '▏'
 let g:indentLine_first_char = '▏'
 let g:indentLine_color_term = 239
 let g:indentLine_show_first_level=1
 let g:indentLine_showFirstIndentLevel = 1
+
 " indentLine would set conceallevel, hiding the quotes in JSON files and ** in markdown
 let g:indentLine_fileTypeExclude = ['json', 'markdown']
+
+let g:markdown_fenced_languages = ["python", "javascript"]
 
 
 """" Usability
@@ -130,45 +144,14 @@ let maplocalleader=';'
 
 let g:peekaboo_window = 'vertical botright 42new'
 
+" move a line down/up
+" -o: do not start with comment leader when adding a new line from normal mode using o/O
+" -t: do not autowrap using textwidth 
+set formatoptions-=ot
+
 nnoremap <silent> <Leader>/ :noh<CR>
 
-" COC settings by examples from https://github.com/neoclide/coc.nvim
-" Use tab/shift-tab to cycle throuhg popup choices.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-"
-" Use ctrl-space to trigger autocompletion
-inoremap <silent><expr> <c-space> coc#refresh()
-"
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-"
-"" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-"
-" Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>fb :Black
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -296,7 +279,7 @@ autocmd BufNewFile,BufRead *.js,*.html,*.css,*.yaml,*.yml
 set tags=.tags
 let g:gutentags_ctags_tagfile='.tags'
 let g:vista_sidebar_width=g:default_plugin_sidebar_size
-let g:vista_default_executive = 'coc'
+" let g:vista_default_executive = 'coc'
 
 let g:vimspector_enable_mappings = 'HUMAN'
 

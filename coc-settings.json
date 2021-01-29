@@ -1,10 +1,9 @@
 {
+  "jedi.enable": true,
+  "jedi.executable.command": "/home/niels/.pyenv/versions/nvim/bin/jedi-language-server",
   "yaml.schemas": {
     "https://raw.githubusercontent.com/docker/compose/master/compose/config/config_schema_v2.0.json": "**/docker-compose*.yml"
   },
-  "graphql.filetypes":  ["graphql", "javascript", "vue"],
-  "graphql.watcherPattern": "**/*.{graphql,gql,js,jsx,vue}",
-  "python.formatting.provider": "black",
   "diagnostic-languageserver.filetypes": {
     "python": "pylint"
   },
