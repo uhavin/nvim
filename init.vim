@@ -1,20 +1,27 @@
 call plug#begin(stdpath('data') . '/plugged')
 """" Looks
 """""" Color schemes aaw yeah
-Plug 'rakr/vim-one'  " Dark and light themes
 Plug 'sonph/onehalf', {'rtp': 'vim/'} " Alternative take on one
 Plug 'ayu-theme/ayu-vim'  " Great dark theme (imho)
 Plug 'cormacrelf/vim-colors-github'  " another nice light theme
-Plug 'preservim/vim-colors-pencil'
 
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+
+"""""" Other prettifiers
 Plug 'itchyny/lightline.vim'
 Plug 'cespare/vim-toml', {'for': 'toml'}
 Plug 'frazrepo/vim-rainbow'
 Plug 'Yggdroot/indentLine'  " Indent guides
 
 " Usability
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }  " Fuzzy finder
-Plug 'junegunn/fzf.vim'
+
+" telescope dependencies
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+" telescope for finding stuff
+Plug 'nvim-telescope/telescope.nvim'
+
 Plug 'wincent/ferret'  "Use :Ack for search
 Plug 'junegunn/vim-peekaboo' " Preview registers
 Plug 'simeji/winresizer'  " use <Leader>w to resize/move/focus windows
@@ -34,8 +41,9 @@ Plug 'andymass/vim-matchup'
 Plug 'vim-scripts/python_match.vim'
 
 " Programming
-"" IntelliSense
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"" autocompletion
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-compe'
 
 " testing, debugging
 Plug 'vim-test/vim-test'
@@ -58,22 +66,59 @@ Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'junegunn/gv.vim'
 
-"GraphQL
-Plug 'jparise/vim-graphql'
 
 call plug#end()
 
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Use pyenv `nvim` as python for neovim
 let g:python3_host_prog='~/.pyenv/versions/nvim/bin/python'
 
+" Use jedi language server
+:lua require'lspconfig'.jedi_language_server.setup{}
+
+
+set completeopt=menuone,noselect
+
+" Compe config
+let g:compe = {}
+let g:compe.enabled = v:true
+let g:compe.autocomplete = v:true
+let g:compe.debug = v:false
+let g:compe.min_length = 1
+let g:compe.preselect = 'enable'
+let g:compe.throttle_time = 80
+let g:compe.source_timeout = 200
+let g:compe.incomplete_delay = 400
+let g:compe.max_abbr_width = 100
+let g:compe.max_kind_width = 100
+let g:compe.max_menu_width = 100
+let g:compe.documentation = v:true
+
+let g:compe.source = {}
+let g:compe.source.buffer = v:true
+let g:compe.source.calc = v:true
+let g:compe.source.emoji = v:true
+let g:compe.source.nvim_lsp = v:true
+let g:compe.source.nvim_lua = v:true
+let g:compe.source.omni = v:false
+let g:compe.source.path = v:true
+let g:compe.source.spell = v:false
+let g:compe.source.ultisnips = v:true
+let g:compe.source.vsnip = v:false
+
+
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm(lexima#expand('<LT>CR>', 'i'))
+inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+
 if !empty($PYENV_VIRTUAL_ENV)
   let g:pyenv_name = split($PYENV_VIRTUAL_ENV, "/")[-1:][0]
-" Set correct python version for pyright
-  call coc#config('python', {
-  \   'pythonPath': $PYENV_VIRTUAL_ENV . '/bin/python'
-  \ })
-endif 
+else
+  let g:pyenv_name = ""
+endif
 
 
 """" Looks
@@ -110,10 +155,11 @@ let g:lightline = {
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 
-let auycolor="dark"
-colo ayu
+" let auycolor="dark"
+" colo ayu
 " set background=light
 " colo github
+colo onehalfdark
 
 set cursorline
 set colorcolumn=89,121
@@ -154,10 +200,11 @@ nnoremap <silent> <Leader>/ :noh<CR>
 nmap <leader>fb :Black
 
 " GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+" TODO: reuse with mappings to lsp
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
 
 nmap <leader>t :Vista!!<cr>
 
@@ -179,26 +226,6 @@ nnoremap <C-H> <C-W><C-H>
 let g:winresizer_start_key="<Leader>w"
 
 
-" FZF
-" Define :Find commmand
-" --column: Show column number
-" --line-number: Show line number
-" --no-heading: Do not show file headings in results
-" --fixed-strings: Search term as a literal string
-" --ignore-case: Case insensitive search
-" --no-ignore: Do not respect .gitignore, etc...
-" --hidden: Search hidden files and folders
-" --follow: Follow symlinks
-" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-" --color: Search color options
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
-" file browsing and searching
-nnoremap <Leader>; :FZF<CR>
-nnoremap <Leader><Space> :Find<Space>
-nnoremap <Leader>fg :GitFiles<CR>
-nnoremap <Leader>ft :Tags<CR>
-nnoremap <Leader>e :Buffers<CR>
 
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
@@ -279,6 +306,7 @@ autocmd BufNewFile,BufRead *.js,*.html,*.css,*.yaml,*.yml
 set tags=.tags
 let g:gutentags_ctags_tagfile='.tags'
 let g:vista_sidebar_width=g:default_plugin_sidebar_size
+" TODO: see if Vista can use LSP-ish exec
 " let g:vista_default_executive = 'coc'
 
 let g:vimspector_enable_mappings = 'HUMAN'
